@@ -24,6 +24,7 @@ def download(url, method='GET', data=None, url_extension='', zipped=False):
 	
 	For .zip files use zipped=True and it returns zipfile.ZipFile object
 	"""
+#	print("webcache:",USE_WEBCACHE)
 	import io
 	if USE_WEBCACHE:
 		key = method.lower() + url + url_extension
