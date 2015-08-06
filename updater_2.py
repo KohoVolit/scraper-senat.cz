@@ -116,10 +116,15 @@ for tr in trs:
         ex = vpapi.get("motions",where={"id":iid})
         if len(ex['_items']) < 1:
             vpapi.post("motions",motion)
+        ex = vpapi.get("vote-events",where={"id":iid})
+        if len(ex['_items']) < 1:
             vpapi.post("vote-events",vote_event)
+        ex = vpapi.get("votes",where={"vote_event_id":iid})
+        if len(ex['_items']) < 1:
             vpapi.post("votes",votes)
         else:
-            break
+            if int(iid) < 14900:
+                break
     except:
         print("XXX:" + iid)
         nothing = 0 # "Zmatečné hlasování"
