@@ -8,6 +8,7 @@ import os.path
 import logging
 from datetime import date, datetime, timedelta
 import argparse
+import time
 
 
 LOGS_DIR = '/var/log/scrapers/cz/senat'
@@ -46,7 +47,7 @@ logname = os.path.abspath(logname)
 logging.basicConfig(level=logging.DEBUG, format='%(message)s', handlers=[logging.FileHandler(logname, 'w', 'utf-8')])
 logging.getLogger('requests').setLevel(logging.ERROR)
 
-logging.info('Started')
+logging.info(datetime.utcnow().strftime('%Y-%m-%d-%H:%M:%S') + '\tStarted')
 db_log = vpapi.post('logs', {'status': 'running', 'file': logname, 'params': []})
 
 
@@ -60,7 +61,7 @@ try:
         ## people
     for i in range(1,82):
         print(i)
-        url = "http://senat.cz/senat/volby/hledani/o_obvodu.php?ke_dni=23.02.2015&O=10&kod=" + str(i)
+        url = "http://senat.cz/senat/volby/hledani/o_obvodu.php?ke_dni=" + time.strftime("%d") + "." + time.strftime("%m") + "." + time.strftime("%Y") + "&O=10&kod=" + str(i)
         domtree = html.fromstring(bytes(scrapeutils.download(url),'iso-8859-1').decode('utf-8'))    #note: senat.cz incorrectly send headers as iso/latin1 and so requests save it incorrectly - so fixing it here
         tables = domtree.xpath('//table[@class="tHistory"]')
         for table in tables:

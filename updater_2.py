@@ -4,6 +4,22 @@ import vpapi
 import authentication
 from lxml import html, etree
 import re
+import logging
+from datetime import date, datetime, timedelta
+
+LOGS_DIR = '/var/log/scrapers/cz/senat'
+
+# set-up logging to a local file
+if not os.path.exists(LOGS_DIR):
+	os.makedirs(LOGS_DIR)
+logname = datetime.utcnow().strftime('%Y-%m-%d-%H%M%S') + '.log'
+logname = os.path.join(LOGS_DIR, logname)
+logname = os.path.abspath(logname)
+logging.basicConfig(level=logging.DEBUG, format='%(message)s', handlers=[logging.FileHandler(logname, 'w', 'utf-8')])
+logging.getLogger('requests').setLevel(logging.ERROR)
+
+logging.info(datetime.utcnow().strftime('%Y-%m-%d-%H:%M:%S') + '\tStarted 2')
+db_log = vpapi.post('logs', {'status': 'running', 'file': logname, 'params': []})
 
 vpapi.parliament('cz/senat')
 vpapi.authorize(authentication.username,authentication.password)
@@ -129,4 +145,5 @@ for tr in trs:
         print("XXX:" + iid)
         nothing = 0 # "Zmatečné hlasování"
 
+vpapi.patch('logs', db_log['id'], {'status': "finished"})
 
